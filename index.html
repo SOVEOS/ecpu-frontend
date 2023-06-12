@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="image/favicon.png" sizes="42x42">
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<!-- MDB -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/1.0.0/mdb.min.js"></script>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<!-- MDB -->
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/1.0.0/mdb.min.css" rel="stylesheet"/>
+<!-- animate.css -->
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+
+
+
+<!-- ScatterJS and EOSJS -->
+<script src='assets/scatterjs-core.min.js'></script>
+<script src='assets/scatterjs-plugin-eosjs2.min.js'></script>
+<script src='assets/eosjs-api.js'></script>
+<script src='assets/eosjs-jsonrpc.js'></script>
+
+<title>ecpu.app</title>
+
+</head>
+
+<body class="unique-color-dark">
+
+<div class="container p-0">
+
+<nav class="navbar navbar-light shadow navbar-expand-lg heavy-rain-gradient d-flex justify-content-between" >
+    <div class="container">
+        <button type="button" class="btn btn-lg elegant-color text-light z-depth-1 ml-0 waves-effect" id="loginButton" onclick="signInOut()"><i class="fas fa-lg fa-key"></i></button>
+        <a class="navbar-brand text-dark pl-1"><strong>ecpu.</strong>app</a>
+        <div class='container mb-2 ml-0 p-0' style='position: relative; height:3.5vh; width:3.5vh;'><canvas id='cpuChart'></canvas></div>
+        <div class='container mb-2 ml-0 p-0' style='position: relative; height:3.5vh; width:3.5vh;'><canvas id='netChart'></canvas></div>
+        <div class='container mb-2 ml-0 p-0' style='position: relative; height:3.5vh; width:3.5vh;'><canvas id='ramChart'></canvas></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7"
+      aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
+      <ul class="nav" role="tablist">
+        <li class="nav-item">
+          <strong class="nav-link text-dark" id="status" aria-selected="false">please login</strong>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" id="delegate-tab-md" data-toggle="tab" href="#delegate-md" role="tab" aria-controls="delegate-md" aria-selected="true"><strong><i class='fas fa-lg fa-charging-station mx-2'></i></strong></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="mine-tab-md" data-toggle="tab" href="#mine-md" role="tab" aria-controls="mine-md" aria-selected="false"><strong><i class='fas fa-lg fa-hard-hat mx-2'></i></strong></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="info-tab-md" data-toggle="tab" href="#info-md" role="tab" aria-controls="info-md" aria-selected="false"><strong><i class='fas fa-lg fa-vote-yea mx-2'></i></strong></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="node-tab-md" data-toggle="tab" href="#node-md" role="tab" aria-controls="node-md" aria-selected="false"><strong><i class='fas fa-lg fa-satellite-dish mx-2'></i></strong></a>
+        </li>
+      </ul>
+
+    </div>
+
+    </div>
+</nav>
+
+<div class='container mt-1 pt-1 mb-0 pb-0'>
+<div class='row row-cols-2 mt-3'>
+    <div class='col d-flex justify-content-center p-0'>
+        <i class="fa fa-lg fa-piggy-bank text-warning"></i><small id='eosBalance' class='text-light pl-1'>EOS</small>
+    </div>
+    <div class='col d-flex justify-content-center p-0'>
+        <i class="fa fa-lg fa-piggy-bank text-warning"></i><small id='ecpuBalance' class='text-light pl-1'>ECPU</small>
+    </div>
+</div>
+</div>
+
+
+<!--
+<div class="d-flex mt-1 mb-0 pb-0 justify-content-center">
+        <button type="button" id='doinit' class='btn btn-default z-depth-3 text-dark' onclick='doinit()'>Click to Initialize ECPU Contract</button>
+    </div>
+-->
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="delegate-md" role="tabpanel" aria-labelledby="delegate-md-tab">
+
+        <div class="container rounded m-0 p-4">
+            <div class="row row-cols-2 mt-0 pt-0">
+                <div class="col ml-0 pl-0 pr-2">
+                <div class="md-form input-with-post-icon mb-0">
+                    <i class="fas fa-user text-light input-prefix"></i>
+                    <input class="form-control ml-0" type='text' maxlength="12" value="account name" id='ecpuRecipient'>
+                </div>
+                    <button class="btn btn-block sunny-morning-gradient text-center text-dark z-depth-3 waves-effect" id='undelegateButton' onclick='undelegateECPU()'>undelegate <i class='fas fa-2x fa-plug'></i></button>
+                    <small class='text-white-50' id='totalDelegating'>delegated</small>
+                </div>
+                <div class="col mr-0 pr-0 pl-2">
+                    <div class="md-form input-with-post-icon mb-0">
+                    <i class="fas fa-coins text-light input-prefix"></i>
+                    <input class="form-control ml-0" type='number' min='1' step='1'id='ecpuAmount'>
+                    <label for='ecpuAmount'>ecpu amount</label>
+                </div>
+                    <button class="btn btn-block aqua-gradient text-center text-dark z-depth-3 waves-effect" id='delegateButton' onclick='delegateECPU()'>delegate <i class='fas fa-2x fa-charging-station'></i></button>
+                    <small class='text-white-50' id='liquidECPU'>liquid</small>
+                </div>
+
+
+                </div>
+                <br>
+
+
+<table class="table table-sm align-middle">
+  <thead>
+    <tr class="text-light">
+      <th>delegating</th>
+      <th>undelegating</th>
+      <th>actions</th>
+    </tr>
+  </thead>
+  <tbody id="deltable"></tbody>
+</table>
+<br>
+<div id="undelAll" class="justify-content-center"></div>
+
+
+</div>
+</div>
+
+
+
+
+
+<div class="tab-pane fade" id="mine-md" role="tabpanel" aria-labelledby="mine-tab-md">
+
+    <br>
+    <br>
+    <br>
+
+<div class="justify-content-center d-flex mb-0 pb-0"><img id="pickaxe_png" src="https://img.icons8.com/stickers/100/000000/golden-fever.png"/></div>
+<br>
+<h6 id='ecpuMiningRate' class="text-center text-white-50 mb-0 pb-0">...</h6>
+
+<br>
+<br>
+<br>
+
+
+
+          <div class="container">
+          <div class="md-form input-with-post-icon m-3">
+                    <i class="fas fa-coins text-light input-prefix"></i>
+                    <input type='number' min="0" step="0.00001" class="text-center form-control m-2" id="target_mining_rate" value="0">
+                    <label for="target_mining_rate">mining reward limit</label>
+            </div>
+        </div>
+
+        <br>
+        <br>
+
+
+
+
+        <div class="container d-flex justify-content-center">
+            <div class="custom-control custom-checkbox">
+                <input type='checkbox' class="custom-control-input" id='checkbox-3' onclick='switch_autominer(this)'>
+                <label class="custom-control-label text-white-50" for='checkbox-3' style='font-size:15px;'>Auto</label>
+                <button type="button" class="btn btn-rounded border border-light btn-lg sunny-morning-gradient text-dark z-depth-4 waves-effect" id='dotransaction_bundle' onclick='dotransaction_bundle()'><img src="https://img.icons8.com/external-jumpicon-glyph-ayub-irawan/32/000000/external-mining-cryptocurrency-jumpicon-glyph-jumpicon-glyph-ayub-irawan-2.png"/> X 1</button>
+            </div>
+        </div>
+
+        <br>
+
+
+        <!--this is the div for the slider-->
+        <div class="container d-flex justify-content-center">
+            <input style='width:270px;' type="range" min="1" max="100" step="1" class="slider" value='1' id="myRange" oninput="showVal(this.value)" onchange="showVal(this.value)">
+        </div>
+
+        <br>
+        <br>
+
+         <!--this is the little blocks that update by consecutively turning black when you are mining so that the user understands it is working-->
+        <div style='width:100%;margin-left:0;margin-right:0;margin-top:10px;height:25px;border:none;'>
+            <svg viewbox="0, 0, 400, 10">
+                <rect id='rect1'  x="0" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect2'  x="40" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect3'  x="80" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect4'  x="120" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect5'  x="160" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect6'  x="200" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect7'  x="240" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect8'  x="280" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect9'  x="320" y="0" width="38" height="10" fill='#2e3951' />
+                <rect id='rect10' x="360" y="0" width="38" height="10" fill='#2e3951' />
+            </svg>
+        </div>
+
+
+</div>
+
+<div class="tab-pane fade" id="info-md" role="tabpanel" aria-labelledby="info-tab-md">
+
+        <br>
+        <br>
+        <br>
+
+
+    <div class="d-flex justify-content-center">
+    <canvas id="voteChart"></canvas>
+    </div>
+    <br>
+    <br>
+    <div id='voteInfo' class='row text-center'></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="continer d-flex justify-content-center">
+
+    <div class="md-form input-with-post-icon">
+        <i class="fas fa-user input-prefix"></i>
+        <input class="form-control ml-0" type='text' maxlength="12" id='voteRecipient'>
+        <label for='voteRecipient'>vote recipient</label>
+    </div>
+    <br>
+    <button id="voteBtn" type="button" class="btn border border-light btn-rounded blue-gradient z-depth-4 waves-effect" onclick="vote()"><i class='fas fa-lg fa-vote-yea'></i></button>
+
+    </div>
+
+
+
+</div>
+
+<br>
+
+<div class="tab-pane mt-5 fade" id="node-md" role="tabpanel" aria-labelledby="node-tab-md">
+<div class="d-flex justify-content-center">
+    <h6 class="text-light">Change Node</h6>
+    <br>
+    <br>
+</div>
+<div class="d-flex justify-content-center">
+<select id="scatterHost" class="text-center browser-default custom-select" type="text"style="max-width: 300px">
+  <option value="jungle3history.cryptolions.io" selected>jungle3history.cryptolions.io</option>
+  <option value="eos.greymass.com">eos.greymass.com</option>
+  <option value="api.eosdetroit.io">api.eosdetroit.io</option>
+  <option value="api.eosn.io">api.eosn.io</option>
+  <option value="api.eosmetal.io">api.eosmetal.io</option>
+  <option value="api.eoslaomao.com">api.eoslaomao.com</option>
+  <option value="api.eoseoul.io">api.eoseoul.io</option>
+  <option value="eu.eosdac.io">eu.eosdac.io</option>
+</select>
+</div>
+<br>
+<div class="d-flex justify-content-center">
+<button id="nodeChangeBtn" class="btn btn-lg rare-wind-gradient btn-rounded border border-light text-dark z-depth-3 waves-effect" type="button" onclick="changeNode()"><i class='fas fa-2x fa-sync-alt'></i></button>
+</div>
+
+<br>
+<br>
+<br>
+
+<div class="d-flex justify-content-center">
+    <h6 class="text-light">Join us on Telegram</h6>
+    <br>
+    <br>
+</div>
+<div class="d-flex justify-content-center">
+<button id="tgBtn" class="btn btn-lg blue-gradient btn-rounded border border-light text-dark z-depth-3 waves-effect" type="button" onclick="help()"><i class='fab fa-2x fa-telegram-plane text-light'></i></button>
+</div>
+<br>
+
+</div>
+</div>
+
+    </body>
+    <script type="text/javascript" src="assets/main.js"></script>
+</html>
